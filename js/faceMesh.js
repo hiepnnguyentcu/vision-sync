@@ -3,11 +3,13 @@ const out2 = document.getElementsByClassName('output2')[0];
 const controlsElement2 = document.getElementsByClassName('control2')[0];
 const canvasCtx = out2.getContext('2d');
 
+console.log(video2);
+console.log(out2);
+console.log(controlsElement2);
+console.log(canvasCtx);
+
 const fpsControl = new FPS();
-const spinner = document.querySelector('.loading');
-spinner.ontransitionend = () => {
-  spinner.style.display = 'none';
-};
+
 
 function onResultsFaceMesh(results) {
   document.body.classList.add('loaded');
