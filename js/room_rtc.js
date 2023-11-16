@@ -58,11 +58,9 @@ let joinStream = async () => {
     document.getElementById('join-btn').style.display = 'none'
     document.getElementsByClassName('stream__actions')[0].style.display = 'flex'
 
-    localTracks = await AgoraRTC.createMicrophoneAndCameraTracks({}, {encoderConfig:{
-        width:{min:640, ideal:1920, max:1920},
-        height:{min:480, ideal:1080, max:1080}
-    }})
-
+    const canvas = document.getElementsByClassName('output2')[0];
+    canvas.getContext('2d');
+    localTracks.videoTrack = AgoraRTC.createCustomVideoTrack({ mediaStreamTrack: canvas.captureStream().getVideoTracks()[0]});
 
     let player = `<div class="video__container" id="user-container-${uid}">
                     <div class="video-player" id="user-${uid}"></div>
@@ -71,8 +69,9 @@ let joinStream = async () => {
     document.getElementById('streams__container').insertAdjacentHTML('beforeend', player)
     document.getElementById(`user-container-${uid}`).addEventListener('click', expandVideoFrame)
 
-    localTracks[1].play(`user-${uid}`)
-    await client.publish([localTracks[0], localTracks[1]])
+    localTracks.videoTrack.play(`user-${uid}`);
+    localTracks.audioTrack = localTracks.audioTrack || await AgoraRTC.createMicrophoneAudioTrack();
+    await client.publish(Object.values(localTracks));
 }
 
 let switchToCamera = async () => {
